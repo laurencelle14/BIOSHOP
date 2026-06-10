@@ -10,6 +10,7 @@ import CartPage from './features/cart/CartPage'
 import CheckoutPage from './features/checkout/CheckoutPage'
 import OrderSuccessPage from './features/checkout/OrderSuccessPage'
 import OrdersPage from './features/orders/OrdersPage'
+import ProfilePage from './features/users/ProfilePage'
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-success" element={<OrderSuccessPage />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   )

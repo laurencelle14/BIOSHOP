@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingCart, LogOut, LogIn, UserPlus, Leaf, Package, Menu, X } from 'lucide-react'
+import { ShoppingCart, LogOut, LogIn, UserPlus, Leaf, Package, Menu, X, User } from 'lucide-react'
 import { useState } from 'react'
 import useAuthStore from '../store/authStore'
 import useCartStore from '../store/cartStore'
@@ -121,6 +121,7 @@ export default function Navbar() {
             <Leaf size={15} color="#4A7C59" />
             Nos Produits
           </Link>
+
           {isAuthenticated && (
             <Link to="/orders" className="nav-link" style={{
               color: '#4A4A4A', textDecoration: 'none', fontSize: '14px',
@@ -131,12 +132,23 @@ export default function Navbar() {
               Mes Commandes
             </Link>
           )}
+
+          {isAuthenticated && (
+            <Link to="/profile" className="nav-link" style={{
+              color: '#4A4A4A', textDecoration: 'none', fontSize: '14px',
+              fontWeight: '500', letterSpacing: '0.5px', display: 'flex',
+              alignItems: 'center', gap: '6px'
+            }}>
+              <User size={15} color="#8B7355" />
+              Mon Profil
+            </Link>
+          )}
         </div>
 
         {/* Actions droite */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
 
-          {/* Panier — toujours visible */}
+          {/* Panier */}
           <Link to="/cart" className="cart-icon" onClick={closeMenu} style={{
             position: 'relative', textDecoration: 'none',
             color: '#4A4A4A', display: 'flex', alignItems: 'center'
@@ -205,7 +217,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Menu mobile déroulant */}
+      {/* Menu mobile */}
       {menuOpen && (
         <div className="mobile-menu" style={{
           position: 'fixed',
@@ -223,12 +235,11 @@ export default function Navbar() {
           gap: '0.5rem'
         }}>
 
-          {/* Liens navigation */}
           <Link to="/products" onClick={closeMenu} style={{
             display: 'flex', alignItems: 'center', gap: '12px',
             padding: '14px 16px', borderRadius: '12px', textDecoration: 'none',
             color: '#3A3A3A', fontSize: '15px', fontWeight: '500',
-            backgroundColor: '#F8F4E9', transition: 'all 0.2s ease'
+            backgroundColor: '#F8F4E9'
           }}>
             <Leaf size={18} color="#4A7C59" />
             Nos Produits
@@ -239,17 +250,27 @@ export default function Navbar() {
               display: 'flex', alignItems: 'center', gap: '12px',
               padding: '14px 16px', borderRadius: '12px', textDecoration: 'none',
               color: '#3A3A3A', fontSize: '15px', fontWeight: '500',
-              backgroundColor: '#F8F4E9', transition: 'all 0.2s ease'
+              backgroundColor: '#F8F4E9'
             }}>
               <Package size={18} color="#C9A84C" />
               Mes Commandes
             </Link>
           )}
 
-          {/* Séparateur */}
+          {isAuthenticated && (
+            <Link to="/profile" onClick={closeMenu} style={{
+              display: 'flex', alignItems: 'center', gap: '12px',
+              padding: '14px 16px', borderRadius: '12px', textDecoration: 'none',
+              color: '#3A3A3A', fontSize: '15px', fontWeight: '500',
+              backgroundColor: '#F8F4E9'
+            }}>
+              <User size={18} color="#8B7355" />
+              Mon Profil
+            </Link>
+          )}
+
           <div style={{ height: '1px', backgroundColor: '#E8DFC8', margin: '0.5rem 0' }} />
 
-          {/* Auth mobile */}
           {isAuthenticated ? (
             <button onClick={handleLogout} style={{
               display: 'flex', alignItems: 'center', gap: '12px',
