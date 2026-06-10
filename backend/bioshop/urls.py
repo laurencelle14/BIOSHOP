@@ -8,9 +8,9 @@ urlpatterns = [
     path('api/users/', include('apps.users.urls')),
     path('api/payments/', include('apps.payments.urls')),
     path('api/orders/', include('apps.orders.urls')),
+    path('api/reviews/', include('apps.reviews.urls')),
 
     # JWT
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
 ]

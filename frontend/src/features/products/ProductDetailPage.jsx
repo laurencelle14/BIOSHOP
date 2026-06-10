@@ -5,6 +5,309 @@ import api from '../../services/api'
 import useCartStore from '../../store/cartStore'
 import useAuthStore from '../../store/authStore'
 
+function StarRating({ value, onChange, readOnly = false }) {
+  const [hovered, setHovered] = useState(0)
+  return (
+    <div style={{ display: 'flex', gap: '4px' }}>
+      {[1, 2, 3, 4, 5].map(star => (
+        <Star
+          key={star}
+          size={20}
+          fill={(hovered || value) >= star ? '#C9A84C' : 'none'}
+          color={(hovered || value) >= star ? '#C9A84C' : '#E8DFC8'}
+          style={{ cursor: readOnly ? 'default' : 'pointer', transition: 'all 0.15s' }}
+          onMouseEnter={() => !readOnly && setHovered(star)}
+          onMouseLeave={() => !readOnly && setHovered(0)}
+          onClick={() => !readOnly && onChange && onChange(star)}
+        />
+      ))}
+    </div>
+  )
+}
+
+function ReviewSection({ productSlug, productId }) {
+  const { isAuthenticated } = useAuthStore()
+  const [reviews, setReviews] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [rating, setRating] = useState(5)
+  const [comment, setComment] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await api.get(`/reviews/reviews/?product_slug=${productSlug}`)
+        setReviews(response.data)
+      } catch {
+        console.error('Erreur chargement avis')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchReviews()
+  }, [productSlug, success])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+    setError('')
+    try {
+      await api.post('/reviews/reviews/', {
+        product: productId,
+        rating,
+        comment
+      })
+      setSuccess(true)
+      setComment('')
+      setRating(5)
+      setTimeout(() => setSuccess(false), 3000)
+    } catch {
+      setError('Vous avez déjà laissé un avis ou une erreur est survenue.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const avgRating = reviews.length
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : null
+
+  return (
+    <div style={{
+      backgroundColor: '#FEFEFE',
+      borderRadius: '20px',
+      padding: '2rem',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+      border: '1px solid #F0EBD8'
+    }}>
+
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '1.5rem',
+        flexWrap: 'wrap',
+        gap: '1rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Star size={20} color="#C9A84C" fill="#C9A84C" />
+          <h2 style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '20px',
+            color: '#3A3A3A',
+            fontWeight: '400',
+            margin: 0
+          }}>
+            Avis clients
+          </h2>
+          <span style={{ fontSize: '14px', color: '#8B7355' }}>({reviews.length})</span>
+        </div>
+        {avgRating && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <StarRating value={Math.round(avgRating)} readOnly />
+            <span style={{
+              fontSize: '18px',
+              fontWeight: '700',
+              color: '#C9A84C',
+              fontFamily: 'Georgia, serif'
+            }}>
+              {avgRating}/5
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Formulaire avis */}
+      {isAuthenticated ? (
+        <div style={{
+          backgroundColor: '#F8F4E9',
+          borderRadius: '16px',
+          padding: '1.5rem',
+          marginBottom: '2rem',
+          border: '1px solid #E8DFC8'
+        }}>
+          <h3 style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '16px',
+            color: '#3A3A3A',
+            fontWeight: '400',
+            marginBottom: '1rem'
+          }}>
+            Laisser un avis
+          </h3>
+
+          {success && (
+            <div style={{
+              backgroundColor: '#D1FAE5',
+              color: '#059669',
+              padding: '10px 16px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              marginBottom: '1rem'
+            }}>
+              Votre avis a été publié ! ✓
+            </div>
+          )}
+
+          {error && (
+            <div style={{
+              backgroundColor: '#FEE2E2',
+              color: '#DC2626',
+              padding: '10px 16px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              marginBottom: '1rem'
+            }}>
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: '500',
+                color: '#4A4A4A',
+                marginBottom: '8px'
+              }}>
+                Note
+              </label>
+              <StarRating value={rating} onChange={setRating} />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: '500',
+                color: '#4A4A4A',
+                marginBottom: '6px'
+              }}>
+                Commentaire
+              </label>
+              <textarea
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                placeholder="Partagez votre expérience avec ce produit..."
+                required
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: '1.5px solid #E8DFC8',
+                  fontSize: '14px',
+                  outline: 'none',
+                  backgroundColor: '#FEFEFE',
+                  boxSizing: 'border-box',
+                  resize: 'vertical',
+                  fontFamily: 'inherit'
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{
+                padding: '10px 24px',
+                backgroundColor: submitting ? '#D4B86A' : '#C9A84C',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: submitting ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {submitting ? 'Publication...' : 'Publier mon avis'}
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div style={{
+          backgroundColor: '#F8F4E9',
+          borderRadius: '12px',
+          padding: '1rem 1.5rem',
+          marginBottom: '2rem',
+          fontSize: '14px',
+          color: '#8B7355',
+          fontStyle: 'italic'
+        }}>
+          {"Connectez-vous pour laisser un avis sur ce produit."}
+        </div>
+      )}
+
+      {/* Liste avis */}
+      {loading ? (
+        <p style={{ color: '#8B7355', fontSize: '14px' }}>Chargement des avis...</p>
+      ) : reviews.length === 0 ? (
+        <p style={{ color: '#8B7355', fontSize: '14px', fontStyle: 'italic' }}>
+          Aucun avis pour ce produit. Soyez le premier à donner votre avis !
+        </p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {reviews.map(review => (
+            <div key={review.id} style={{
+              borderTop: '1px solid #F0EBD8',
+              paddingTop: '1rem'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '6px',
+                flexWrap: 'wrap',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    backgroundColor: '#4A7C59',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>
+                    {(review.user?.first_name || review.user?.username || 'U')[0].toUpperCase()}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '14px', fontWeight: '600', color: '#3A3A3A', margin: 0 }}>
+                      {review.user?.first_name || review.user?.username}
+                    </p>
+                    <p style={{ fontSize: '12px', color: '#A89880', margin: 0 }}>
+                      {new Date(review.created_at).toLocaleDateString('fr-FR', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <StarRating value={review.rating} readOnly />
+              </div>
+              <p style={{
+                fontSize: '14px',
+                color: '#6B5B45',
+                lineHeight: 1.7,
+                margin: 0
+              }}>
+                {review.comment}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function ProductDetailPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
@@ -30,7 +333,6 @@ export default function ProductDetailPage() {
     }
     fetchProduct()
   }, [slug, navigate])
-
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       navigate('/login')
@@ -98,11 +400,11 @@ export default function ProductDetailPage() {
         padding: '2rem',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '2rem',
+        gap: '3rem',
         alignItems: 'start'
       }}>
 
-        {/* Colonne gauche — Image */}
+        {/* Image */}
         <div>
           <div style={{
             backgroundColor: '#FEFEFE',
@@ -126,7 +428,6 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Miniatures */}
           {images.length > 1 && (
             <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
               {images.map((img, i) => (
@@ -154,10 +455,10 @@ export default function ProductDetailPage() {
           )}
         </div>
 
-        {/* Colonne droite — Infos */}
+        {/* Infos */}
         <div className="fade-in-up">
 
-          {/* Catégorie + badges */}
+          {/* Badges */}
           <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem', flexWrap: 'wrap' }}>
             {product.category && (
               <span style={{
@@ -219,7 +520,8 @@ export default function ProductDetailPage() {
             fontWeight: '700',
             color: '#C9A84C',
             fontFamily: 'Georgia, serif',
-            marginBottom: '1.5rem'
+            marginBottom: '1.5rem',
+            whiteSpace: 'nowrap'
           }}>
             {product.price} €
           </div>
@@ -251,11 +553,9 @@ export default function ProductDetailPage() {
             </span>
           </div>
 
-          {/* Quantité + Ajouter au panier */}
+          {/* Quantité + Panier */}
           {product.stock > 0 && (
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
-
-              {/* Sélecteur quantité */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -302,7 +602,6 @@ export default function ProductDetailPage() {
                 </button>
               </div>
 
-              {/* Bouton panier */}
               <button
                 onClick={handleAddToCart}
                 className="btn-primary"
@@ -332,34 +631,8 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Section avis */}
-      <div style={{
-        maxWidth: '1100px',
-        margin: '2rem auto',
-        padding: '0 2rem 4rem'
-      }}>
-        <div style={{
-          backgroundColor: '#FEFEFE',
-          borderRadius: '20px',
-          padding: '2rem',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-          border: '1px solid #F0EBD8'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-            <Star size={20} color="#C9A84C" />
-            <h2 style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: '20px',
-              color: '#3A3A3A',
-              fontWeight: '400',
-              margin: 0
-            }}>
-              Avis clients
-            </h2>
-          </div>
-          <p style={{ color: '#8B7355', fontSize: '14px', fontStyle: 'italic' }}>
-            Aucun avis pour ce produit pour le moment. Soyez le premier à donner votre avis !
-          </p>
-        </div>
+      <div style={{ maxWidth: '1100px', margin: '2rem auto', padding: '0 2rem 4rem' }}>
+        <ReviewSection productSlug={slug} productId={product.id} />
       </div>
 
     </div>
