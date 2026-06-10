@@ -97,8 +97,8 @@ export default function ProductDetailPage() {
         margin: '0 auto',
         padding: '2rem',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '3rem',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '2rem',
         alignItems: 'start'
       }}>
 

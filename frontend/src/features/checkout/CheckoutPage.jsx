@@ -11,13 +11,14 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
 const cardElementOptions = {
   style: {
     base: {
-      fontSize: '15px',
+      fontSize: '14px',
       color: '#3A3A3A',
       fontFamily: 'Georgia, serif',
       '::placeholder': { color: '#A89880' }
     },
     invalid: { color: '#DC2626' }
-  }
+  },
+  hidePostalCode: true
 }
 
 function PaymentForm({ address, items, totalPrice, clearCart }) {
@@ -88,7 +89,9 @@ function PaymentForm({ address, items, totalPrice, clearCart }) {
           padding: '14px 16px',
           borderRadius: '12px',
           border: '1.5px solid #E8DFC8',
-          backgroundColor: '#F8F4E9'
+          backgroundColor: '#F8F4E9',
+          overflowX: 'hidden',
+          minHeight: '50px',
         }}>
           <CardElement options={cardElementOptions} />
         </div>
@@ -233,7 +236,7 @@ export default function CheckoutPage() {
 
         <div style={{
           maxWidth: '900px', margin: '0 auto', padding: '2rem',
-          display: 'grid', gridTemplateColumns: '1fr 320px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '2rem', alignItems: 'start'
         }}>
 

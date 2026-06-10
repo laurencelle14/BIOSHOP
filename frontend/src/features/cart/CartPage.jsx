@@ -75,7 +75,7 @@ export default function CartPage() {
         margin: '0 auto',
         padding: '2rem',
         display: 'grid',
-        gridTemplateColumns: '1fr 340px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         gap: '2rem',
         alignItems: 'start'
       }}>
@@ -111,6 +111,7 @@ export default function CartPage() {
               display: 'flex',
               gap: '1rem',
               alignItems: 'center',
+              flexWrap: 'wrap',
               boxShadow: '0 4px 16px rgba(0,0,0,0.05)',
               border: '1px solid #F0EBD8'
             }}>
@@ -153,7 +154,8 @@ export default function CartPage() {
                   fontSize: '18px',
                   fontWeight: '700',
                   color: '#C9A84C',
-                  fontFamily: 'Georgia, serif'
+                  fontFamily: 'Georgia, serif',
+                  whiteSpace: 'nowrap'
                 }}>
                   {item.price} €
                 </p>
