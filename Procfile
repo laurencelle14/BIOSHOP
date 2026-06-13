@@ -1,0 +1,1 @@
+web: gunicorn bioshop.wsgi --log-file -
