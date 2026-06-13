@@ -8,3 +8,4 @@ stripe
 drf-spectacular
 python-dotenv
 psycopg2-binary
+pyotp
