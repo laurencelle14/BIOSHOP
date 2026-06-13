@@ -2,5 +2,8 @@
 builder = "nixpacks"
 buildCommand = "pip install -r requirements/prod.txt && python manage.py collectstatic --noinput"
 
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pip"]
+
 [deploy]
 startCommand = "gunicorn bioshop.wsgi --log-file -"
