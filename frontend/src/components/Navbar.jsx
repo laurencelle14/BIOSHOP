@@ -1,12 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingCart, LogOut, LogIn, UserPlus, Leaf, Package, Menu, X, User } from 'lucide-react'
+import { ShoppingCart, LogOut, LogIn, UserPlus, Leaf, Package, Menu, X, User, LayoutDashboard } from 'lucide-react'
 import { useState } from 'react'
 import useAuthStore from '../store/authStore'
 import useCartStore from '../store/cartStore'
 import logo from '../assets/logo.png'
 
 export default function Navbar() {
-  const { isAuthenticated, logout } = useAuthStore()
+  const { isAuthenticated, isStaff, logout } = useAuthStore()
   const totalItems = useCartStore((state) => state.totalItems())
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -79,33 +79,17 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link to="/" className="logo-link" onClick={closeMenu} style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          textDecoration: 'none'
+          display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none'
         }}>
           <img src={logo} alt="Body's Caprice" style={{
-            height: '46px',
-            width: '46px',
-            borderRadius: '50%',
-            objectFit: 'cover',
-            boxShadow: '0 2px 8px rgba(201,168,76,0.3)'
+            height: '46px', width: '46px', borderRadius: '50%',
+            objectFit: 'cover', boxShadow: '0 2px 8px rgba(201,168,76,0.3)'
           }} />
           <div style={{ lineHeight: 1.2 }}>
-            <div style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: '15px',
-              color: '#C9A84C',
-              fontWeight: '600'
-            }}>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: '15px', color: '#C9A84C', fontWeight: '600' }}>
               {"Body's Caprice"}
             </div>
-            <div style={{
-              fontSize: '9px',
-              color: '#8B7355',
-              letterSpacing: '2px',
-              textTransform: 'uppercase'
-            }}>
+            <div style={{ fontSize: '9px', color: '#8B7355', letterSpacing: '2px', textTransform: 'uppercase' }}>
               By E.M.A
             </div>
           </div>
@@ -141,6 +125,17 @@ export default function Navbar() {
             }}>
               <User size={15} color="#8B7355" />
               Mon Profil
+            </Link>
+          )}
+
+          {isAuthenticated && isStaff && (
+            <Link to="/admin" className="nav-link" style={{
+              color: '#C9A84C', textDecoration: 'none', fontSize: '14px',
+              fontWeight: '600', letterSpacing: '0.5px', display: 'flex',
+              alignItems: 'center', gap: '6px'
+            }}>
+              <LayoutDashboard size={15} color="#C9A84C" />
+              Dashboard
             </Link>
           )}
         </div>
@@ -208,8 +203,7 @@ export default function Navbar() {
             onClick={() => setMenuOpen(!menuOpen)}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              color: '#4A4A4A', display: 'flex', alignItems: 'center',
-              padding: '4px'
+              color: '#4A4A4A', display: 'flex', alignItems: 'center', padding: '4px'
             }}
           >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -220,26 +214,17 @@ export default function Navbar() {
       {/* Menu mobile */}
       {menuOpen && (
         <div className="mobile-menu" style={{
-          position: 'fixed',
-          top: '70px',
-          left: 0,
-          right: 0,
-          backgroundColor: 'rgba(254,254,254,0.98)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #E8DFC8',
-          padding: '1.5rem',
-          zIndex: 99,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem'
+          position: 'fixed', top: '70px', left: 0, right: 0,
+          backgroundColor: 'rgba(254,254,254,0.98)', backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #E8DFC8', padding: '1.5rem', zIndex: 99,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1)', display: 'flex',
+          flexDirection: 'column', gap: '0.5rem'
         }}>
 
           <Link to="/products" onClick={closeMenu} style={{
             display: 'flex', alignItems: 'center', gap: '12px',
             padding: '14px 16px', borderRadius: '12px', textDecoration: 'none',
-            color: '#3A3A3A', fontSize: '15px', fontWeight: '500',
-            backgroundColor: '#F8F4E9'
+            color: '#3A3A3A', fontSize: '15px', fontWeight: '500', backgroundColor: '#F8F4E9'
           }}>
             <Leaf size={18} color="#4A7C59" />
             Nos Produits
@@ -249,8 +234,7 @@ export default function Navbar() {
             <Link to="/orders" onClick={closeMenu} style={{
               display: 'flex', alignItems: 'center', gap: '12px',
               padding: '14px 16px', borderRadius: '12px', textDecoration: 'none',
-              color: '#3A3A3A', fontSize: '15px', fontWeight: '500',
-              backgroundColor: '#F8F4E9'
+              color: '#3A3A3A', fontSize: '15px', fontWeight: '500', backgroundColor: '#F8F4E9'
             }}>
               <Package size={18} color="#C9A84C" />
               Mes Commandes
@@ -261,11 +245,22 @@ export default function Navbar() {
             <Link to="/profile" onClick={closeMenu} style={{
               display: 'flex', alignItems: 'center', gap: '12px',
               padding: '14px 16px', borderRadius: '12px', textDecoration: 'none',
-              color: '#3A3A3A', fontSize: '15px', fontWeight: '500',
-              backgroundColor: '#F8F4E9'
+              color: '#3A3A3A', fontSize: '15px', fontWeight: '500', backgroundColor: '#F8F4E9'
             }}>
               <User size={18} color="#8B7355" />
               Mon Profil
+            </Link>
+          )}
+
+          {isAuthenticated && isStaff && (
+            <Link to="/admin" onClick={closeMenu} style={{
+              display: 'flex', alignItems: 'center', gap: '12px',
+              padding: '14px 16px', borderRadius: '12px', textDecoration: 'none',
+              color: '#C9A84C', fontSize: '15px', fontWeight: '600',
+              backgroundColor: '#FDF8ED', border: '1.5px solid #E8DFC8'
+            }}>
+              <LayoutDashboard size={18} color="#C9A84C" />
+              Dashboard
             </Link>
           )}
 
@@ -288,8 +283,7 @@ export default function Navbar() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 gap: '8px', padding: '14px 16px', borderRadius: '12px',
                 textDecoration: 'none', color: '#4A7C59', fontSize: '15px',
-                fontWeight: '500', border: '1.5px solid #4A7C59',
-                backgroundColor: 'transparent'
+                fontWeight: '500', border: '1.5px solid #4A7C59', backgroundColor: 'transparent'
               }}>
                 <LogIn size={18} />
                 Connexion

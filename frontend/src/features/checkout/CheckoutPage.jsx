@@ -36,7 +36,7 @@ function PaymentForm({ address, items, totalPrice, clearCart }) {
     try {
       const orderRes = await api.post('/orders/orders/', {
         address,
-        items: items.map(item => ({
+        items_write: items.map(item => ({
           product: item.id,
           quantity: item.quantity,
           price_at_purchase: item.price

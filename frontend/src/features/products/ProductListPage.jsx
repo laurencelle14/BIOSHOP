@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Leaf, SlidersHorizontal } from 'lucide-react'
+import { Search, Leaf } from 'lucide-react'
 import api from '../../services/api'
 
 export default function ProductListPage() {
@@ -74,18 +74,12 @@ export default function ProductListPage() {
         </p>
       </div>
 
+      {/* Contenu principal */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
 
-        {/* Barre de recherche + Filtres */}
-        <div className="fade-in-up" style={{
-          display: 'flex',
-          gap: '1rem',
-          marginBottom: '2rem',
-          flexWrap: 'wrap'
-        }}>
-
-          {/* Recherche */}
-          <div style={{ flex: 1, minWidth: '250px', position: 'relative' }}>
+        {/* Barre de recherche */}
+        <div className="fade-in-up" style={{ marginBottom: '1rem' }}>
+          <div style={{ position: 'relative', maxWidth: '500px' }}>
             <Search size={18} style={{
               position: 'absolute',
               left: '14px',
@@ -110,38 +104,53 @@ export default function ProductListPage() {
               }}
             />
           </div>
+        </div>
 
-          {/* Filtre catégorie */}
-          <div style={{ position: 'relative' }}>
-            <SlidersHorizontal size={16} style={{
-              position: 'absolute',
-              left: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: '#8B7355'
-            }} />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+        {/* Pills catégories */}
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          flexWrap: 'wrap',
+          marginBottom: '2rem'
+        }}>
+          <button
+            onClick={() => setSelectedCategory('')}
+            style={{
+              padding: '8px 18px',
+              borderRadius: '20px',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: '600',
+              backgroundColor: selectedCategory === '' ? '#4A7C59' : '#FEFEFE',
+              color: selectedCategory === '' ? 'white' : '#4A4A4A',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Toutes
+          </button>
+
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.slug)}
               style={{
-                padding: '12px 16px 12px 36px',
-                borderRadius: '12px',
-                border: '1.5px solid #E8DFC8',
-                fontSize: '14px',
-                outline: 'none',
-                backgroundColor: '#FEFEFE',
-                color: '#4A4A4A',
+                padding: '8px 18px',
+                borderRadius: '20px',
+                border: 'none',
                 cursor: 'pointer',
-                appearance: 'none',
-                minWidth: '180px'
+                fontSize: '13px',
+                fontWeight: '600',
+                backgroundColor: selectedCategory === cat.slug ? '#4A7C59' : '#FEFEFE',
+                color: selectedCategory === cat.slug ? 'white' : '#4A4A4A',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                transition: 'all 0.2s ease'
               }}
             >
-              <option value="">Toutes les catégories</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.slug}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
+              {cat.name}
+            </button>
+          ))}
         </div>
 
         {/* Loading */}
@@ -290,6 +299,7 @@ export default function ProductListPage() {
                           </span>
                         </div>
                       </div>
+
                     </div>
                   </Link>
                 ))}
@@ -297,6 +307,7 @@ export default function ProductListPage() {
             )}
           </>
         )}
+
       </div>
     </div>
   )

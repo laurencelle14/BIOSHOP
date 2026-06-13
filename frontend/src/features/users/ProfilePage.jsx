@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User, Mail, MapPin } from 'lucide-react'
+import { User, Mail, Phone } from 'lucide-react'
 import api from '../../services/api'
 import logo from '../../assets/logo.png'
 
@@ -9,7 +9,7 @@ export default function ProfilePage() {
     first_name: '',
     last_name: '',
     email: '',
-    username: ''
+    phone: ''
   })
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function ProfilePage() {
           first_name: response.data.first_name || '',
           last_name: response.data.last_name || '',
           email: response.data.email || '',
-          username: response.data.username || ''
+          phone: response.data.phone || ''
         })
       } catch {
         console.error('Erreur chargement profil')
@@ -77,7 +77,7 @@ export default function ProfilePage() {
             fontFamily: 'Georgia, serif',
             boxShadow: '0 4px 16px rgba(74,124,89,0.3)'
           }}>
-            {(formData.first_name || formData.username || 'U')[0].toUpperCase()}
+            {(formData.first_name || formData.email || 'U')[0].toUpperCase()}
           </div>
         </div>
         <h1 style={{
@@ -89,7 +89,7 @@ export default function ProfilePage() {
         }}>
           {formData.first_name
             ? `${formData.first_name} ${formData.last_name}`
-            : formData.username}
+            : formData.email}
         </h1>
         <p style={{
           color: '#8B7355',
@@ -132,6 +132,7 @@ export default function ProfilePage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
+            {/* Prénom + Nom */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -143,11 +144,8 @@ export default function ProfilePage() {
                 padding: '1rem 1.25rem'
               }}>
                 <p style={{
-                  fontSize: '12px',
-                  color: '#A89880',
-                  margin: '0 0 4px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px'
+                  fontSize: '12px', color: '#A89880', margin: '0 0 4px',
+                  textTransform: 'uppercase', letterSpacing: '1px'
                 }}>
                   Prénom
                 </p>
@@ -162,11 +160,8 @@ export default function ProfilePage() {
                 padding: '1rem 1.25rem'
               }}>
                 <p style={{
-                  fontSize: '12px',
-                  color: '#A89880',
-                  margin: '0 0 4px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px'
+                  fontSize: '12px', color: '#A89880', margin: '0 0 4px',
+                  textTransform: 'uppercase', letterSpacing: '1px'
                 }}>
                   Nom
                 </p>
@@ -176,6 +171,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {/* Email */}
             <div style={{
               backgroundColor: '#F8F4E9',
               borderRadius: '12px',
@@ -187,11 +183,8 @@ export default function ProfilePage() {
               <Mail size={16} color="#8B7355" />
               <div>
                 <p style={{
-                  fontSize: '12px',
-                  color: '#A89880',
-                  margin: '0 0 2px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px'
+                  fontSize: '12px', color: '#A89880', margin: '0 0 2px',
+                  textTransform: 'uppercase', letterSpacing: '1px'
                 }}>
                   Email
                 </p>
@@ -201,6 +194,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {/* Téléphone */}
             <div style={{
               backgroundColor: '#F8F4E9',
               borderRadius: '12px',
@@ -209,19 +203,16 @@ export default function ProfilePage() {
               alignItems: 'center',
               gap: '10px'
             }}>
-              <User size={16} color="#8B7355" />
+              <Phone size={16} color="#8B7355" />
               <div>
                 <p style={{
-                  fontSize: '12px',
-                  color: '#A89880',
-                  margin: '0 0 2px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px'
+                  fontSize: '12px', color: '#A89880', margin: '0 0 2px',
+                  textTransform: 'uppercase', letterSpacing: '1px'
                 }}>
-                  {"Nom d'utilisateur"}
+                  Téléphone
                 </p>
                 <p style={{ fontSize: '15px', color: '#3A3A3A', fontWeight: '500', margin: 0 }}>
-                  {formData.username || '—'}
+                  {formData.phone || '—'}
                 </p>
               </div>
             </div>
@@ -237,7 +228,7 @@ export default function ProfilePage() {
           border: '1px solid #F0EBD8'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
-            <MapPin size={18} color="#C9A84C" />
+            <User size={18} color="#C9A84C" />
             <h2 style={{
               fontFamily: 'Georgia, serif',
               fontSize: '18px',

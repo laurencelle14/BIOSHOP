@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from apps.products.models import Product
 
 
@@ -12,7 +12,7 @@ class Review(models.Model):
         (5, '5 étoiles'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES, default=1)
     comment = models.TextField(max_length=1000)
@@ -25,4 +25,4 @@ class Review(models.Model):
         verbose_name_plural = 'Avis'
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name} - {self.rating}★"
+        return f"{self.user.email} - {self.product.name} - {self.rating}★"

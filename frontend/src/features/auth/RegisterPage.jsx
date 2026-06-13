@@ -1,21 +1,22 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, UserPlus } from 'lucide-react'
+import { Eye, EyeOff, UserPlus, Mail, Phone } from 'lucide-react'
 import api from '../../services/api'
 import logo from '../../assets/logo.png'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     first_name: '',
     last_name: '',
+    phone: '',
     password: '',
     confirmPassword: ''
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -32,18 +33,26 @@ export default function RegisterPage() {
       return
     }
 
+    if (formData.password.length < 8) {
+      setError('Le mot de passe doit contenir au moins 8 caractères.')
+      return
+    }
+
     setLoading(true)
     try {
       await api.post('/users/register/', {
-        username: formData.username,
         email: formData.email,
         first_name: formData.first_name,
         last_name: formData.last_name,
+        phone: formData.phone,
         password: formData.password,
       })
-      navigate('/login')
-    } catch {
-      setError('Une erreur est survenue. Veuillez réessayer.')
+      setSuccess(true)
+      setTimeout(() => navigate('/login'), 2000)
+    } catch (err) {
+      const data = err.response?.data
+      if (data?.email) setError('Cet email est déjà utilisé.')
+      else setError('Une erreur est survenue. Veuillez réessayer.')
     } finally {
       setLoading(false)
     }
@@ -112,9 +121,24 @@ export default function RegisterPage() {
             textTransform: 'uppercase',
             marginTop: '4px'
           }}>
-            {"Créer un compte"}
+            Créer un compte
           </p>
         </div>
+
+        {/* Succès */}
+        {success && (
+          <div style={{
+            backgroundColor: '#D1FAE5',
+            color: '#065F46',
+            padding: '12px 16px',
+            borderRadius: '10px',
+            fontSize: '14px',
+            marginBottom: '1.5rem',
+            textAlign: 'center'
+          }}>
+            ✅ Compte créé ! Redirection vers la connexion...
+          </div>
+        )}
 
         {/* Erreur */}
         {error && (
@@ -132,157 +156,175 @@ export default function RegisterPage() {
         )}
 
         {/* Formulaire */}
-        <form onSubmit={handleSubmit}>
+        {!success && (
+          <form onSubmit={handleSubmit}>
 
-          {/* Prénom + Nom */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '1.2rem' }}>
-            <div>
-              <label style={labelStyle}>Prénom</label>
-              <input
-                type="text"
-                name="first_name"
-                value={formData.first_name}
-                onChange={handleChange}
-                placeholder="Votre Prénom"
-                style={inputStyle}
-              />
+            {/* Prénom + Nom */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '1.2rem' }}>
+              <div>
+                <label style={labelStyle}>Prénom</label>
+                <input
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  placeholder="Christ"
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>Nom</label>
+                <input
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  placeholder="N'guessan"
+                  style={inputStyle}
+                />
+              </div>
             </div>
-            <div>
-              <label style={labelStyle}>Nom</label>
-              <input
-                type="text"
-                name="last_name"
-                value={formData.last_name}
-                onChange={handleChange}
-                placeholder="votre nom"
-                style={inputStyle}
-              />
-            </div>
-          </div>
 
-          {/* Username */}
-          <div style={{ marginBottom: '1.2rem' }}>
-            <label style={labelStyle}>{"Nom d'utilisateur"}</label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Nom d'utilisateur..."
-              required
-              style={inputStyle}
-            />
-          </div>
-
-          {/* Email */}
-          <div style={{ marginBottom: '1.2rem' }}>
-            <label style={labelStyle}>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="marie@example.com"
-              required
-              style={inputStyle}
-            />
-          </div>
-
-          {/* Password */}
-          <div style={{ marginBottom: '1.2rem' }}>
-            <label style={labelStyle}>Mot de passe</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                required
-                style={{ ...inputStyle, padding: '12px 46px 12px 16px' }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
+            {/* Email */}
+            <div style={{ marginBottom: '1.2rem' }}>
+              <label style={labelStyle}>Email</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={16} style={{
                   position: 'absolute',
-                  right: '14px',
+                  left: '14px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#8B7355',
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: 0
-                }}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+                  color: '#8B7355'
+                }} />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="marie@example.com"
+                  required
+                  style={{ ...inputStyle, padding: '12px 16px 12px 42px' }}
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Confirm Password */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={labelStyle}>Confirmer le mot de passe</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showConfirm ? 'text' : 'password'}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="••••••••"
-                required
-                style={{ ...inputStyle, padding: '12px 46px 12px 16px' }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                style={{
+            {/* Téléphone */}
+            <div style={{ marginBottom: '1.2rem' }}>
+              <label style={labelStyle}>Téléphone <span style={{ color: '#8B7355', fontWeight: '400' }}>(optionnel)</span></label>
+              <div style={{ position: 'relative' }}>
+                <Phone size={16} style={{
                   position: 'absolute',
-                  right: '14px',
+                  left: '14px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#8B7355',
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: 0
-                }}
-              >
-                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+                  color: '#8B7355'
+                }} />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="+225 07 00 00 00 00"
+                  style={{ ...inputStyle, padding: '12px 16px 12px 42px' }}
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Bouton */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-gold"
-            style={{
-              width: '100%',
-              padding: '14px',
-              backgroundColor: loading ? '#D4B86A' : '#C9A84C',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '15px',
-              fontWeight: '600',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-          >
-            <UserPlus size={18} />
-            {loading ? 'Création...' : 'Créer mon compte'}
-          </button>
-        </form>
+            {/* Password */}
+            <div style={{ marginBottom: '1.2rem' }}>
+              <label style={labelStyle}>Mot de passe</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  style={{ ...inputStyle, padding: '12px 46px 12px 16px' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '14px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#8B7355',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: 0
+                  }}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={labelStyle}>Confirmer le mot de passe</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  style={{ ...inputStyle, padding: '12px 46px 12px 16px' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  style={{
+                    position: 'absolute',
+                    right: '14px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#8B7355',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: 0
+                  }}
+                >
+                  {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Bouton */}
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '14px',
+                backgroundColor: loading ? '#D4B86A' : '#C9A84C',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '15px',
+                fontWeight: '600',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+            >
+              <UserPlus size={18} />
+              {loading ? 'Création...' : 'Créer mon compte'}
+            </button>
+          </form>
+        )}
 
         {/* Lien connexion */}
         <p style={{
@@ -291,7 +333,7 @@ export default function RegisterPage() {
           fontSize: '14px',
           color: '#8B7355'
         }}>
-          {"Déjà un compte ?"}{' '}
+          Déjà un compte ?{' '}
           <Link to="/login" style={{
             color: '#4A7C59',
             fontWeight: '600',

@@ -5,7 +5,10 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'slug', 'image', 'parent']
-
+        extra_kwargs = {
+            'image': {'required': False},
+            'parent': {'required': False},
+        }
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
