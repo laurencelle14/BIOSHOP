@@ -1,9 +1,6 @@
 [build]
-builder = "nixpacks"
-buildCommand = "pip install -r requirements/prod.txt && python manage.py collectstatic --noinput"
-
-[phases.setup]
-nixPkgs = ["python311", "python311Packages.pip"]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "gunicorn bioshop.wsgi --log-file -"
+startCommand = "gunicorn bioshop.wsgi --bind 0.0.0.0:8000 --log-file -"
