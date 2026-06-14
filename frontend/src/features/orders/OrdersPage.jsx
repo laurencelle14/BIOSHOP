@@ -142,7 +142,7 @@ export default function OrdersPage() {
                         fontSize: '17px', fontWeight: '700', color: '#C9A84C',
                         fontFamily: 'Georgia, serif', whiteSpace: 'nowrap'
                       }}>
-                        {parseFloat(order.total).toFixed(2)} €
+                        {parseFloat(order.total).toFixed(2)} fcfa
                       </span>
                       {isExpanded
                         ? <ChevronUp size={18} color="#8B7355" />
@@ -256,7 +256,7 @@ export default function OrdersPage() {
                                 </div>
                               </div>
                               <span style={{ fontSize: '14px', fontWeight: '700', color: '#C9A84C', fontFamily: 'Georgia, serif' }}>
-                                {(parseFloat(item.price_at_purchase) * item.quantity).toFixed(2)} €
+                                {(parseFloat(item.price_at_purchase) * item.quantity).toFixed(2)} fcfa
                               </span>
                             </div>
                           ))}
@@ -269,7 +269,7 @@ export default function OrdersPage() {
                         }}>
                           <span style={{ fontSize: '14px', fontWeight: '600', color: '#4A4A4A' }}>Total</span>
                           <span style={{ fontSize: '20px', fontWeight: '700', color: '#C9A84C', fontFamily: 'Georgia, serif' }}>
-                            {parseFloat(order.total).toFixed(2)} €
+                            {parseFloat(order.total).toFixed(2)} fcfa
                           </span>
                         </div>
                       </div>

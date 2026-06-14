@@ -523,7 +523,7 @@ export default function ProductDetailPage() {
             marginBottom: '1.5rem',
             whiteSpace: 'nowrap'
           }}>
-            {product.price} €
+            {product.price} fcfa
           </div>
 
           {/* Description */}

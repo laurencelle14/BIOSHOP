@@ -393,7 +393,7 @@ export default function AdminDashboard() {
                           {product.name}
                         </p>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '13px', color: '#C9A84C', fontWeight: '600' }}>{product.price} €</span>
+                          <span style={{ fontSize: '13px', color: '#C9A84C', fontWeight: '600' }}>{product.price} fcfa</span>
                           <span style={{ fontSize: '13px', color: '#8B7355' }}>Stock: {product.stock}</span>
                           {product.category && (
                             <span style={{ fontSize: '11px', backgroundColor: '#F0EBD8', color: '#8B7355', padding: '2px 8px', borderRadius: '10px' }}>
@@ -547,7 +547,7 @@ export default function AdminDashboard() {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '18px', fontWeight: '700', color: '#C9A84C', fontFamily: 'Georgia, serif' }}>
-                          {parseFloat(order.total).toFixed(2)} €
+                          {parseFloat(order.total).toFixed(2)} fcfa
                         </span>
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                           {Object.entries(statusColors).map(([key, val]) => (
@@ -628,7 +628,7 @@ export default function AdminDashboard() {
               {[
                 { label: 'Nom', key: 'name', type: 'text' },
                 { label: 'Slug', key: 'slug', type: 'text' },
-                { label: 'Prix (€)', key: 'price', type: 'number' },
+                { label: 'Prix (fcfa)', key: 'price', type: 'number' },
                 { label: 'Stock', key: 'stock', type: 'number' },
                 { label: 'Label certification', key: 'certification_label', type: 'text' },
               ].map(field => (

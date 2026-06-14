@@ -133,7 +133,7 @@ function PaymentForm({ address, items, totalPrice, clearCart }) {
         }}
       >
         <Shield size={18} />
-        {loading ? 'Traitement...' : `Payer ${totalPrice().toFixed(2)} €`}
+        {loading ? 'Traitement...' : `Payer ${totalPrice().toFixed(2)} fcfa`}
       </button>
     </div>
   )
@@ -359,7 +359,7 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <span style={{ fontWeight: '600', color: '#3A3A3A' }}>
-                    {(item.price * item.quantity).toFixed(2)} €
+                    {(item.price * item.quantity).toFixed(2)} fcfa
                   </span>
                 </div>
               ))}
@@ -367,7 +367,7 @@ export default function CheckoutPage() {
             <div style={{ borderTop: '1px solid #E8DFC8', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '15px', fontWeight: '600', color: '#3A3A3A' }}>Total</span>
               <span style={{ fontSize: '22px', fontWeight: '700', color: '#C9A84C', fontFamily: 'Georgia, serif' }}>
-                {totalPrice().toFixed(2)} €
+                {totalPrice().toFixed(2)} fcfa
               </span>
             </div>
           </div>

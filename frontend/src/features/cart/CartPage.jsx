@@ -157,7 +157,7 @@ export default function CartPage() {
                   fontFamily: 'Georgia, serif',
                   whiteSpace: 'nowrap'
                 }}>
-                  {item.price} €
+                  {item.price} fcfa
                 </p>
               </div>
 
@@ -219,7 +219,7 @@ export default function CartPage() {
                 fontWeight: '700',
                 color: '#3A3A3A'
               }}>
-                {(item.price * item.quantity).toFixed(2)} €
+                {(item.price * item.quantity).toFixed(2)} fcfa
               </div>
 
               {/* Supprimer */}
@@ -293,7 +293,7 @@ export default function CartPage() {
                 color: '#6B5B45'
               }}>
                 <span>{item.name} × {item.quantity}</span>
-                <span>{(item.price * item.quantity).toFixed(2)} €</span>
+                <span>{(item.price * item.quantity).toFixed(2)} fcfa</span>
               </div>
             ))}
           </div>
@@ -313,7 +313,7 @@ export default function CartPage() {
               color: '#C9A84C',
               fontFamily: 'Georgia, serif'
             }}>
-              {totalPrice().toFixed(2)} €
+              {totalPrice().toFixed(2)} fcfa
             </span>
           </div>
 

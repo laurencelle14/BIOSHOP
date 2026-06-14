@@ -288,7 +288,7 @@ export default function ProductListPage() {
                             color: '#C9A84C',
                             fontFamily: 'Georgia, serif'
                           }}>
-                            {product.price} €
+                            {product.price} fcfa
                           </span>
                           <span style={{
                             fontSize: '12px',
