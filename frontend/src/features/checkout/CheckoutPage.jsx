@@ -348,7 +348,7 @@ export default function CheckoutPage() {
                       justifyContent: 'center', overflow: 'hidden', flexShrink: 0
                     }}>
                       {item.image && item.image.length > 0 ? (
-                        <img src={`http://localhost:8000${item.image[0].image}`} alt={item.name}
+                        <img src={`https://bioshop-production.up.railway.app${item.image[0].image}`} alt={item.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         <Leaf size={16} color="#E8DFC8" />

@@ -419,7 +419,7 @@ export default function ProductDetailPage() {
           }}>
             {images.length > 0 ? (
               <img
-                src={`http://localhost:8000${images[activeImage]?.image}`}
+                src={`https://bioshop-production.up.railway.app${images[activeImage]?.image}`}
                 alt={product.name}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
@@ -445,7 +445,7 @@ export default function ProductDetailPage() {
                   }}
                 >
                   <img
-                    src={`http://localhost:8000${img.image}`}
+                    src={`https://bioshop-production.up.railway.app${img.image}`}
                     alt=""
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />

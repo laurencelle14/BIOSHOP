@@ -114,7 +114,7 @@ export default function AdminDashboard() {
     setProductImage(null)
     setImagePreview(
       product.image && product.image.length > 0
-        ? `http://localhost:8000${product.image[0].image}`
+        ? `https://bioshop-production.up.railway.app${product.image[0].image}`
         : null
     )
     setShowCatDropdown(false)
@@ -378,7 +378,7 @@ export default function AdminDashboard() {
                       }}>
                         {product.image && product.image.length > 0 ? (
                           <img
-                            src={`http://localhost:8000${product.image[0].image}`}
+                            src={`https://bioshop-production.up.railway.app${product.image[0].image}`}
                             alt={product.name}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
@@ -478,7 +478,7 @@ export default function AdminDashboard() {
                         backgroundColor: '#F8F4E9', overflow: 'hidden', flexShrink: 0
                       }}>
                         {cat.image ? (
-                          <img src={`http://localhost:8000${cat.image}`} alt={cat.name}
+                          <img src={`https://bioshop-production.up.railway.app${cat.image}`} alt={cat.name}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
                           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -663,7 +663,7 @@ export default function AdminDashboard() {
                     {selectedCatName && (() => {
                       const cat = categories.find(c => c.id === parseInt(productForm.category))
                       return cat?.image ? (
-                        <img src={`http://localhost:8000${cat.image}`} alt="" style={{ width: '20px', height: '20px', borderRadius: '4px', objectFit: 'cover' }} />
+                        <img src={`https://bioshop-production.up.railway.app${cat.image}`} alt="" style={{ width: '20px', height: '20px', borderRadius: '4px', objectFit: 'cover' }} />
                       ) : null
                     })()}
                     <span>{selectedCatName || '— Choisir une catégorie —'}</span>
@@ -707,7 +707,7 @@ export default function AdminDashboard() {
                         }}
                       >
                         {cat.image ? (
-                          <img src={`http://localhost:8000${cat.image}`} alt="" style={{ width: '24px', height: '24px', borderRadius: '6px', objectFit: 'cover' }} />
+                          <img src={`https://bioshop-production.up.railway.app${cat.image}`} alt="" style={{ width: '24px', height: '24px', borderRadius: '6px', objectFit: 'cover' }} />
                         ) : (
                           <div style={{ width: '24px', height: '24px', borderRadius: '6px', backgroundColor: '#F0EBD8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Tag size={12} color="#8B7355" />

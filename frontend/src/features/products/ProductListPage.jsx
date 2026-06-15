@@ -215,7 +215,7 @@ export default function ProductListPage() {
                       }}>
                         {product.image && product.image.length > 0 ? (
                           <img
-                            src={`http://localhost:8000${product.image[0].image}`}
+                            src={`https://bioshop-production.up.railway.app${product.image[0].image}`}
                             alt={product.name}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />

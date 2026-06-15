@@ -130,7 +130,7 @@ export default function CartPage() {
               }}>
                 {item.image && item.image.length > 0 ? (
                   <img
-                    src={`http://localhost:8000${item.image[0].image}`}
+                    src={`https://bioshop-production.up.railway.app${item.image[0].image}`}
                     alt={item.name}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
