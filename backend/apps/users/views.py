@@ -31,13 +31,19 @@ class LoginView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data['user']
             otp_code = user.generate_otp()
-            send_mail(
-                subject="Votre code de vérification — Body's Caprice",
-                message=f"Bonjour {user.first_name or user.email},\n\nVotre code de connexion est : {otp_code}\n\nCe code expire dans 5 minutes.",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    subject="Votre code de vérification — Body's Caprice",
+                    message=f"Bonjour {user.first_name or user.email},\n\nVotre code de connexion est : {otp_code}\n\nCe code expire dans 5 minutes.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                return Response(
+                    {"error": f"Erreur d'envoi email : {str(e)}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
             return Response(
                 {"message": "Code OTP envoyé à votre email."},
                 status=status.HTTP_200_OK
