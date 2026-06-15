@@ -81,15 +81,15 @@ export default function Navbar() {
         <Link to="/" className="logo-link" onClick={closeMenu} style={{
           display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none'
         }}>
-          <img src={logo} alt="Body's Caprice" style={{
+          <img src={logo} alt="Body's Caprice" translate='no' style={{
             height: '46px', width: '46px', borderRadius: '50%',
             objectFit: 'cover', boxShadow: '0 2px 8px rgba(201,168,76,0.3)'
           }} />
           <div style={{ lineHeight: 1.2 }}>
-            <div style={{ fontFamily: 'Georgia, serif', fontSize: '15px', color: '#C9A84C', fontWeight: '600' }}>
+            <div translate='no' style={{ fontFamily: 'Georgia, serif', fontSize: '15px', color: '#C9A84C', fontWeight: '600' }}>
               {"Body's Caprice"}
             </div>
-            <div style={{ fontSize: '9px', color: '#8B7355', letterSpacing: '2px', textTransform: 'uppercase' }}>
+            <div translate='no' style={{ fontSize: '9px', color: '#8B7355', letterSpacing: '2px', textTransform: 'uppercase' }}>
               By E.M.A
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function Navbar() {
               </button>
             ) : (
               <div style={{ display: 'flex', gap: '10px' }}>
-                <Link to="/login" className="btn-outline" style={{
+                <Link to="/login" className="btn-outline" translate='no' style={{
                   color: '#4A7C59', textDecoration: 'none', padding: '9px 20px',
                   borderRadius: '25px', border: '1.5px solid #4A7C59',
                   fontSize: '14px', fontWeight: '500', display: 'flex',
@@ -185,7 +185,7 @@ export default function Navbar() {
                   <LogIn size={15} />
                   Connexion
                 </Link>
-                <Link to="/register" className="btn-gold" style={{
+                <Link to="/register" className="btn-gold" translate='no' style={{
                   backgroundColor: '#C9A84C', color: 'white', textDecoration: 'none',
                   padding: '9px 20px', borderRadius: '25px', fontSize: '14px',
                   fontWeight: '500', display: 'flex', alignItems: 'center', gap: '6px'
