@@ -108,12 +108,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # CORS
-# CORS_ALLOWED_ORIGINS = [
-    # "https://bodys-caprice-by-ema.vercel.app",
-    # "http://localhost:5173",
-# ]
-
-CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
+CORS_ALLOWED_ORIGINS = [
+    "https://bodys-caprice-by-ema.vercel.app",
+    "http://localhost:5173",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
