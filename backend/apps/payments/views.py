@@ -1,21 +1,19 @@
-import stripe
+import uuid
+import requests
 from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from .models import Payment
 from apps.orders.models import Order
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 def send_payment_confirmation(order):
-    """Email de confirmation de paiement"""
     try:
         items_text = '\n'.join([
-            f"- {item.product.name} x{item.quantity} — {item.price_at_purchase} €"
+            f"- {item.product.name} x{item.quantity} — {item.price_at_purchase} FCFA"
             for item in order.items.all()
         ])
         send_mail(
@@ -28,7 +26,7 @@ Récapitulatif de votre commande #{order.id} :
 
 {items_text}
 
-Total payé : {order.total} €
+Total payé : {order.total} FCFA
 
 Nous préparons votre commande et vous tiendrons informé(e) de son expédition.
 
@@ -43,7 +41,7 @@ Merci pour votre confiance !
         print(f"Erreur envoi email paiement: {e}")
 
 
-class CreatePaymentIntentView(APIView):
+class InitiatePaymentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -54,49 +52,82 @@ class CreatePaymentIntentView(APIView):
         except Order.DoesNotExist:
             return Response({'error': 'Commande introuvable'}, status=status.HTTP_404_NOT_FOUND)
 
-        intent = stripe.PaymentIntent.create(
-            amount=int(order.total * 100),
-            currency='eur',
-            metadata={'order_id': order.id}
-        )
+        transaction_id = str(uuid.uuid4())
 
         Payment.objects.create(
             order=order,
-            stripe_payment_intent_id=intent.id,
+            cinetpay_transaction_id=transaction_id,
             amount=order.total,
             status='pending'
         )
 
-        return Response({'client_secret': intent.client_secret})
-
-
-class PaymentWebhookView(APIView):
-    def post(self, request):
-        payload = request.body
-        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+        payload = {
+            "apikey": settings.CINETPAY_API_KEY,
+            "site_id": settings.CINETPAY_SITE_ID,
+            "transaction_id": transaction_id,
+            "amount": int(order.total),
+            "currency": "XOF",
+            "description": f"Commande #{order.id} — Body's Caprice",
+            "return_url": f"{settings.FRONTEND_URL}/order-success",
+            "notify_url": f"{settings.BACKEND_URL}/api/payments/notify/",
+            "customer_name": order.user.first_name or "Client",
+            "customer_surname": order.user.last_name or "",
+            "customer_email": order.user.email,
+            "customer_phone_number": "",
+            "customer_address": "",
+            "customer_city": "",
+            "customer_country": "CI",
+            "customer_state": "CI",
+            "customer_zip_code": "",
+            "channels": "ALL",
+            "lang": "fr",
+        }
 
         try:
-            event = stripe.Webhook.construct_event(
-                payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+            res = requests.post(
+                "https://api-checkout.cinetpay.com/v2/payment",
+                json=payload
             )
-        except Exception:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            data = res.json()
 
-        if event['type'] == 'payment_intent.succeeded':
-            intent = event['data']['object']
-            Payment.objects.filter(
-                stripe_payment_intent_id=intent['id']
-            ).update(status='succeeded')
+            if data.get("code") == "201":
+                return Response({
+                    "payment_url": data["data"]["payment_url"],
+                    "transaction_id": transaction_id
+                })
+            else:
+                return Response(
+                    {"error": data.get("message", "Erreur CinetPay")},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
-            # Email de confirmation de paiement
-            order_id = intent.get('metadata', {}).get('order_id')
-            if order_id:
-                try:
-                    order = Order.objects.get(id=order_id)
-                    order.status = 'confirmed'
-                    order.save()
-                    send_payment_confirmation(order)
-                except Order.DoesNotExist:
-                    pass
 
-        return Response({'status': 'ok'})
+class CinetPayNotifyView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        transaction_id = request.data.get("cpm_trans_id")
+        trans_status = request.data.get("cpm_result")
+
+        try:
+            payment = Payment.objects.get(cinetpay_transaction_id=transaction_id)
+        except Payment.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if trans_status == "00":
+            payment.status = "succeeded"
+            payment.save()
+            order = payment.order
+            order.status = "confirmed"
+            order.save()
+            send_payment_confirmation(order)
+        else:
+            payment.status = "failed"
+            payment.save()
+
+        return Response({"status": "ok"})

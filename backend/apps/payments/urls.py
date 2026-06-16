@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import CreatePaymentIntentView, PaymentWebhookView
+from .views import InitiatePaymentView, CinetPayNotifyView
 
 urlpatterns = [
-    path('create-intent/', CreatePaymentIntentView.as_view(), name='create-payment-intent'),
-    path('webhook/', PaymentWebhookView.as_view(), name='payment-webhook'),
+    path('initiate/', InitiatePaymentView.as_view(), name='initiate-payment'),
+    path('notify/', CinetPayNotifyView.as_view(), name='cinetpay-notify'),
 ]
