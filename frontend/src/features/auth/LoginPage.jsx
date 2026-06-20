@@ -285,7 +285,7 @@ export default function LoginPage() {
               <p style={{ fontSize: '14px', color: '#4A4A4A', margin: 0 }}>
                 Un code a été envoyé à
               </p>
-              <p style={{ fontSize: '14px', fontWeight: '600', color: '#4A7C59', margin: '4px 0 0' }}>
+              <p style={{ fontSize: '10px', fontWeight: '600', color: '#4A7C59', margin: '4px 0 0' }}>
                 {email}
               </p>
             </div>
