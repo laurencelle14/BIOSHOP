@@ -1,12 +1,24 @@
+import resend
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.core.mail import send_mail
 from django.conf import settings
 from .models import CustomUser
 from .serializers import RegisterSerializer, LoginSerializer, OTPVerifySerializer, UserSerializer
+
+def send_email(to, subject, body):
+    resend.api_key = settings.RESEND_API_KEY
+    try:
+        resend.Emails.send({
+            "from": settings.DEFAULT_FROM_EMAIL,
+            "to": [to],
+            "subject": subject,
+            "text": body,
+        })
+    except Exception as e:
+        print(f"Erreur Resend: {e}")
 
 
 class RegisterView(APIView):
@@ -31,19 +43,11 @@ class LoginView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data['user']
             otp_code = user.generate_otp()
-            try:
-                send_mail(
-                    subject="Votre code de vérification — Body's Caprice",
-                    message=f"Bonjour {user.first_name or user.email},\n\nVotre code de connexion est : {otp_code}\n\nCe code expire dans 5 minutes.",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=False,
-                )
-            except Exception as e:
-                return Response(
-                    {"error": f"Erreur d'envoi email : {str(e)}"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
+            send_email(
+                to=user.email,
+                subject="Votre code de vérification — Body's Caprice",
+                body=f"Bonjour {user.first_name or user.email},\n\nVotre code de connexion est : {otp_code}\n\nCe code expire dans 5 minutes."
+            )
             return Response(
                 {"message": "Code OTP envoyé à votre email."},
                 status=status.HTTP_200_OK
@@ -93,26 +97,13 @@ class ForgotPasswordView(APIView):
         try:
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
-            # On répond OK même si l'email n'existe pas (sécurité)
             return Response({"message": "Si cet email existe, un code vous a été envoyé."})
 
         otp_code = user.generate_otp()
-        send_mail(
+        send_email(
+            to=user.email,
             subject="Réinitialisation de mot de passe — Body's Caprice",
-            message=f"""Bonjour {user.first_name or user.email},
-
-Vous avez demandé à réinitialiser votre mot de passe.
-
-Votre code de vérification est : {otp_code}
-
-Ce code expire dans 5 minutes.
-
-Si vous n'avez pas fait cette demande, ignorez cet email.
-
-— L'équipe Body's Caprice by E.M.A""",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            fail_silently=False,
+            body=f"Bonjour {user.first_name or user.email},\n\nVotre code de vérification est : {otp_code}\n\nCe code expire dans 5 minutes."
         )
         return Response({"message": "Si cet email existe, un code vous a été envoyé."})
 
