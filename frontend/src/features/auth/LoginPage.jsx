@@ -281,11 +281,11 @@ export default function LoginPage() {
               backgroundColor: '#F0F7F4',
               borderRadius: '12px'
             }}>
-              <Mail size={24} color="#4A7C59" style={{ marginBottom: '8px' }} />
+              <Mail size={18} color="#4A7C59" style={{ marginBottom: '8px' }} />
               <p style={{ fontSize: '14px', color: '#4A4A4A', margin: 0 }}>
                 Un code a été envoyé à
               </p>
-              <p style={{ fontSize: '10px', fontWeight: '600', color: '#4A7C59', margin: '4px 0 0' }}>
+              <p style={{ fontSize: '14px', fontWeight: '600', color: '#4A7C59', margin: '4px 0 0' }}>
                 {email}
               </p>
             </div>
