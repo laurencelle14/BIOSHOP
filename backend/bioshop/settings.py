@@ -140,7 +140,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Email
 RESEND_API_KEY = os.getenv('RESEND_API_KEY')
-DEFAULT_FROM_EMAIL = 'bodyscaprice@gmail.com'
+DEFAULT_FROM_EMAIL = 'onboarding@resend.dev'
 
 # Sécurité en prod
 if not DEBUG:
