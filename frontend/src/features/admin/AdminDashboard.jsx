@@ -19,8 +19,8 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
   const [productForm, setProductForm] = useState({
-    name: '', slug: '', description: '', price: '',
-    stock: '', is_bio: false, certification_label: '',
+    name: '', description: '', price: '',
+    stock: '', is_bio: false,
     is_active: true, category: ''
   })
   const [productImage, setProductImage] = useState(null)
@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   // Modal catégorie
   const [showCatModal, setShowCatModal] = useState(false)
   const [editingCat, setEditingCat] = useState(null)
-  const [catForm, setCatForm] = useState({ name: '', slug: '' })
+  const [catForm, setCatForm] = useState({ name: '' })
   const [catImage, setCatImage] = useState(null)
 
   useEffect(() => {
@@ -102,12 +102,10 @@ export default function AdminDashboard() {
     setEditingProduct(product)
     setProductForm({
       name: product.name,
-      slug: product.slug,
       description: product.description,
       price: product.price,
       stock: product.stock,
       is_bio: product.is_bio,
-      certification_label: product.certification_label || '',
       is_active: product.is_active,
       category: product.category?.id || ''
     })
@@ -186,7 +184,7 @@ export default function AdminDashboard() {
 
   const handleEditCat = (cat) => {
     setEditingCat(cat)
-    setCatForm({ name: cat.name, slug: cat.slug })
+    setCatForm({ name: cat.name })
     setCatImage(null)
     setShowCatModal(true)
   }
@@ -205,7 +203,6 @@ export default function AdminDashboard() {
     try {
       const formData = new FormData()
       formData.append('name', catForm.name)
-      formData.append('slug', catForm.slug)
       if (catImage) formData.append('image', catImage)
 
       if (editingCat) {
@@ -627,10 +624,8 @@ export default function AdminDashboard() {
               {/* Champs texte */}
               {[
                 { label: 'Nom', key: 'name', type: 'text' },
-                { label: 'Slug', key: 'slug', type: 'text' },
                 { label: 'Prix (fcfa)', key: 'price', type: 'number' },
                 { label: 'Stock', key: 'stock', type: 'number' },
-                { label: 'Label certification', key: 'certification_label', type: 'text' },
               ].map(field => (
                 <div key={field.key}>
                   <label style={labelStyle}>{field.label}</label>
@@ -821,17 +816,6 @@ export default function AdminDashboard() {
                   value={catForm.name}
                   onChange={e => setCatForm({ ...catForm, name: e.target.value })}
                   placeholder="Ex: Huiles essentielles"
-                  style={inputStyle}
-                />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Slug</label>
-                <input
-                  type="text"
-                  value={catForm.slug}
-                  onChange={e => setCatForm({ ...catForm, slug: e.target.value })}
-                  placeholder="Ex: huiles-essentielles"
                   style={inputStyle}
                 />
               </div>
