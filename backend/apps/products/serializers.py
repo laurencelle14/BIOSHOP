@@ -4,7 +4,7 @@ from .models import Category, Product, ProductImage
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'image', 'parent']
+        fields = ['id', 'name', 'image', 'parent']
         extra_kwargs = {
             'image': {'required': False},
             'parent': {'required': False},
@@ -21,8 +21,8 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'slug', 'description',
-            'price', 'stock', 'is_bio', 'certification_label',
+            'id', 'name', 'description',
+            'price', 'stock', 'is_bio',
             'category', 'image', 'is_active',
             'created_at', 'updated_at'
         ]
