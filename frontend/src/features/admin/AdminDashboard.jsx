@@ -120,16 +120,16 @@ export default function AdminDashboard() {
   }
 
   const handleNewProduct = () => {
-    setEditingProduct(null)
-    setProductForm({
-      name: '', slug: '', description: '', price: '',
-      stock: '', is_bio: false, certification_label: '',
-      is_active: true, category: ''
-    })
-    setProductImage(null)
-    setImagePreview(null)
-    setShowCatDropdown(false)
-    setShowModal(true)
+  setEditingProduct(null)
+  setProductForm({
+    name: '', description: '', price: '',
+    stock: '', is_bio: false,
+    is_active: true, category: ''
+  })
+  setProductImage(null)
+  setImagePreview(null)
+  setShowCatDropdown(false)
+  setShowModal(true)
   }
 
   const handleImageChange = (e) => {
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
   // ── Catégories ────────────────────────────────────────
   const handleNewCat = () => {
     setEditingCat(null)
-    setCatForm({ name: '', slug: '' })
+    setCatForm({ name: '' })
     setCatImage(null)
     setShowCatModal(true)
   }
